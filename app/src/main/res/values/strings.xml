@@ -1,0 +1,67 @@
+<resources>
+    <string name="app_name">GloChat</string>
+    <string name="title_activity_base">BaseActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="dialog_permission_title">Grant Permissions</string>
+    <string name="dialog_permission_message">This app needs permission to use this feature. You can grant them in app settings.</string>
+    <string name="go_to_settings">GOTO SETTINGS</string>
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="home">Home</string>
+    <string name="search">Search</string>
+    <string name="media">Media</string>
+    <string name="profile">Profile</string>
+    <string name="chat">Chat</string>
+    <string name="lbl_take_camera_picture">Take a picture</string>
+    <string name="lbl_choose_from_gallery">Choose from gallery</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="following">Following</string>
+    <string name="popular">Popular</string>
+    <string name="title_activity_main2">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="verify_number">Verify Phone Number</string>
+    <string name="sms_verify_sub_header">waiting to automatically detect SMS code sent to</string>
+    <string name="wrong_number">wrong number?</string>
+    <string name="resend_sms">Resend SMS</string>
+    <string name="count_down_time">3:00</string>
+    <string name="icon_like_fill">&#xe60d;</string>
+    <string name="icon_comment">&#xe621;</string>
+    <string name="icon_more">&#xe61b;</string>
+    <string name="onboard_text_first">Have more fun and ease stress with amazing videos around the globe.\nRecord, edit and share your videos with the world</string>
+    <string name="onboard_text_second">Enjoy seamless IM, Voice/Video Calls with loved ones, family and friends anywhere anytime with GloChat</string>
+    <string name="onboard_text_third">Time to take, edit and share amazing photos with the world. Showcase your style in colours and stylish text with GloChat Photos</string>
+    <string name="onboard_text_fourth">Now you can communicate with the world freely. Enjoy unlimited in-app-calls and app-to-local-calls anytime anywhere free of charge with GloChat App</string>
+    <string name="title_activity_scrolling">ScrollingActivity</string>
+
+    <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
+    <string name="facebook_application_id" translatable="false">313679686596007</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb313679686596007</string>
+    <string name="facebook_app_id">313679686596007</string>
+    <string name="fb_login_protocol_scheme">fb313679686596007</string>
+    <string name="action_settings">Settings</string>
+    <string name="call">call</string>
+    <string name="photo">photo</string>
+    <string name="video">video</string>
+    <string name="last_message">last message</string>
+    <string name="continue_with_google">continue with google</string>
+    <string name="continue_with_facebook">continue with facebook</string>
+    <string name="or">or</string>
+    <string name="continue_with_email">continue with email</string>
+    <string name="login">Login</string>
+    <string name="signup">Signup</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="continue_with_phone">sign up with phone number</string>
+    <string name="storage_link">gs://glochat-5fdb1.appspot.com</string>
+    <string name="proceed">PROCEED</string>
+    <string name="likes">likes</string>
+    <string name="photos">""</string>
+    <string name="videos">""</string>
+    <string name="trans">trans</string>
+</resources>

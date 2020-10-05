@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/home_page"
+        android:enabled="true"
+        android:icon="@drawable/selector_home"
+        android:title="@string/home"/>
+    <item
+        android:id="@+id/search_page"
+        android:enabled="true"
+        android:icon="@drawable/selector_search"
+        android:title="@string/search"/>
+    <item
+        android:id="@+id/media_page"
+        android:enabled="true"
+        android:icon="@drawable/selector_media"
+        android:title="@string/media"/>
+
+    <item
+        android:id="@+id/chat_page"
+        android:enabled="true"
+        android:icon="@drawable/selector_chat"
+        android:title="@string/chat"/>
+    <item
+        android:id="@+id/profile_page"
+        android:enabled="true"
+        android:icon="@drawable/selector_profile"
+        android:title="@string/profile"/>
+
+</menu>

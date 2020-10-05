@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginTop="100dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="144dp">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="115dp"
+            android:background="@color/color_bg_theme"
+            android:layout_alignParentBottom="true"/>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/user_profile_photo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="20dp"
+            android:scaleType="centerCrop"
+            android:layout_centerVertical="true"/>
+
+        <TextView
+            android:id="@+id/friend_request"
+            android:layout_width="170dp"
+            android:layout_height="40dp"
+            android:text="Send Friend Request"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="@dimen/fui_body_padding_bottom"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/shape_round_red"/>
+
+        <TextView
+            android:id="@+id/friend_request_cancel"
+            android:layout_width="170dp"
+            android:layout_height="40dp"
+            android:text="Decline Friend Request"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="@dimen/fui_body_padding_bottom"
+            android:layout_marginTop="@dimen/fui_body_padding_bottom"
+            android:layout_below="@id/friend_request"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/shape_round_halfwhite"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/color_bg_theme"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingBottom="12dp">
+
+        <TextView
+            android:id="@+id/user_profile_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:textColor="@color/white"
+            android:textSize="25sp"/>
+
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#2fff"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/user_bio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="bio"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:layout_marginTop="15dp"/>
+
+
+
+     <!--   <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
+
+            <TextView
+                android:id="@+id/following_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="14"
+                android:textColor="@color/white"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" Following"
+                android:textColor="@color/color_tag"
+                android:textSize="14sp"/>
+
+            <LinearLayout
+                android:id="@+id/ll_focus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/followers_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="310"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:layout_marginStart="15dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" Followers"
+                    android:textColor="@color/color_tag"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_fans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/likes_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="291"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:layout_marginStart="15dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" likes"
+                    android:textColor="@color/color_tag"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+
+        </LinearLayout>-->
+    </LinearLayout>
+
+</LinearLayout>

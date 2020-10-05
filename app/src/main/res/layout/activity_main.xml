@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <!--  <androidx.fragment.app.FragmentContainerView
+        android:name="net.glochat.dev.fragment.MainFragment"
+        android:id="@+id/main_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+-->
+
+  <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:fitsSystemWindows="true"
+      tools:context=".activity.MainActivity">
+
+
+      <com.google.android.material.appbar.AppBarLayout
+          android:id="@+id/app_bar"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@color/colorPrimary"
+          android:fitsSystemWindows="true"
+          android:theme="@style/Theme.GloChat.AppBarOverlay">
+
+          <com.google.android.material.appbar.CollapsingToolbarLayout
+              android:id="@+id/toolbar_layout"
+              android:layout_width="match_parent"
+              android:layout_height="100dp"
+              android:fitsSystemWindows="true"
+              app:expandedTitleGravity="top"
+              app:expandedTitleMarginTop="10dp"
+              app:expandedTitleMarginStart="15dp"
+              app:contentScrim="?attr/colorPrimary"
+              app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
+              app:toolbarId="@+id/toolbar">
+
+              <androidx.appcompat.widget.Toolbar
+                  android:id="@+id/toolbar"
+                  android:layout_width="match_parent"
+                  android:layout_height="?attr/actionBarSize"
+                  app:layout_collapseMode="pin"
+                  app:title="@string/app_name"
+                  app:popupTheme="@style/Theme.GloChat.PopupOverlay">
+
+
+              </androidx.appcompat.widget.Toolbar>
+
+              <RelativeLayout
+                  android:layout_width="wrap_content"
+                  android:layout_height="?attr/actionBarSize"
+                  android:layout_gravity="end"
+                  android:layout_marginEnd="60dp">
+
+
+                  <net.glochat.dev.view.CircleImageView
+                      android:id="@+id/profile_pic"
+                      android:layout_width="40dp"
+                      android:layout_height="40dp"
+                      android:layout_centerInParent="true"
+                      app:es_shape_type="round"
+                      />
+              </RelativeLayout>
+
+
+
+          </com.google.android.material.appbar.CollapsingToolbarLayout>
+          <com.google.android.material.tabs.TabLayout
+              android:id="@+id/tabLayout"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_gravity="bottom"
+              android:background="@color/transparent"
+              app:tabIndicatorColor="@color/white"
+              app:tabMode="fixed"
+              app:tabIndicator="@drawable/tab_indicator"
+              app:tabIndicatorAnimationDuration="@android:integer/config_mediumAnimTime"
+              app:tabIndicatorFullWidth="false"
+              app:tabIndicatorHeight="4dp"
+              app:tabTextColor="@color/grey"
+              app:tabIconTint="@color/white"
+              app:tabSelectedTextColor="@color/white">
+
+              <com.google.android.material.tabs.TabItem
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/video" />
+
+              <com.google.android.material.tabs.TabItem
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/chat" />
+
+              <com.google.android.material.tabs.TabItem
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/photo" />
+              <com.google.android.material.tabs.TabItem
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/call" />
+
+          </com.google.android.material.tabs.TabLayout>
+
+      </com.google.android.material.appbar.AppBarLayout>
+
+      <androidx.viewpager.widget.ViewPager
+          android:id="@+id/viewpager"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+
+
+  </androidx.coordinatorlayout.widget.CoordinatorLayout>

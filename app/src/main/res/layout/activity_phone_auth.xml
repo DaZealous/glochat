@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+
+android:fitsSystemWindows="true"
+android:layout_width="match_parent"
+android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/enter_phone_number_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="35dp"
+        android:autoSizeMaxTextSize="20sp"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeTextType="uniform"
+        android:text="Enter your phone number"
+        android:textColor="#63365E"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:autoSizeTextType="uniform" />
+    <LinearLayout
+        android:id="@+id/phone_number_layout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/enter_phone_number_title"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="35dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+
+
+        <com.hbb20.CountryCodePicker
+            android:id="@+id/countryCodePicker"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical|start"
+            app:ccp_showArrow="true"
+            app:ccp_arrowColor="#663660"
+            app:ccp_autoDetectCountry="true"
+            app:ccp_autoFormatNumber="true"
+            app:ccp_contentColor="@color/black"
+            app:ccp_defaultNameCode="NG"
+            app:ccp_showFlag="false" />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/divider"
+            android:layout_marginRight="10dp"/>
+
+        <EditText
+            android:id="@+id/phone_number_editText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:hint="phone number"
+            android:background="@android:color/transparent"
+            android:inputType="phone" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/divider"
+        android:layout_below="@id/phone_number_layout"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="35dp"
+        android:layout_marginEnd="35dp"/>
+
+    <TextView
+        android:id="@+id/receive_sms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="You will receive a SMS to confirm your phone number."
+        android:layout_below="@id/divider"
+        android:textColor="#63365E"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="35dp"
+        android:layout_marginEnd="35dp"/>
+
+    <Button
+        android:id="@+id/next_button"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
+        android:background="@drawable/button_gradient"
+        android:layout_below="@id/receive_sms"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="35dp"
+        android:enabled="false"
+        android:text="Next"
+        android:textAllCaps="false"
+        android:textColor="@color/white" />
+
+</RelativeLayout>
+

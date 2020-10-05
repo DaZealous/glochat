@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragment.PersonalHomeFragment"
+    android:background="@color/color_bg_theme">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbarlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            app:layout_behavior=".utils.AppbarZoomBehavior">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                app:contentScrim="@color/color_bg_theme"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/background_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:scaleType="centerCrop"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:background="#66000000"/>
+
+                    <include layout="@layout/personal_home_header"/>
+                </FrameLayout>
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    app:layout_collapseMode="pin">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:id="@+id/back_button"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/return_white"
+                            android:background="@drawable/shape_circle_halfwhite"
+                            android:padding="8dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_centerVertical="true"/>
+
+
+                        <TextView
+                            android:id="@+id/user_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="name"
+                            android:textColor="@color/white"
+                            android:textSize="18sp"
+                            android:visibility="gone"
+                            android:layout_centerInParent="true"/>
+
+
+
+                    </RelativeLayout>
+                </androidx.appcompat.widget.Toolbar>
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+            <com.androidkun.xtablayout.XTabLayout
+                android:id="@+id/tablayout"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                app:xTabIndicatorColor="#FF9F00"
+                app:xTabSelectedTextColor="@color/white"
+                app:xTabTextColor="#CCCCCC"
+                app:xTabIndicatorWidth="90dp"
+                app:xTabTextBold="true"
+                app:xTabTextSize="15sp">
+
+                <com.androidkun.xtablayout.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:icon="@drawable/user_video"/>
+
+                <com.androidkun.xtablayout.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:icon="@drawable/user_photo"/>
+
+            </com.androidkun.xtablayout.XTabLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</RelativeLayout>
