@@ -30,7 +30,7 @@ public class App extends Application {
             ApplicationHelper.initDatabaseHelper(this);
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
-            mUserDatabase = FirebaseDatabase.getInstance().
+          /*  mUserDatabase = FirebaseDatabase.getInstance().
                     getReference().child("users").child(mUser.getUid());
             mUserDatabase.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -47,7 +47,7 @@ public class App extends Application {
                 public void onCancelled(DatabaseError databaseError) {
 
                 }
-            });
+            });*/
 
         }
     }

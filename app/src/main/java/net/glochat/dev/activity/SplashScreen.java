@@ -12,7 +12,6 @@ import net.glochat.dev.base.BaseActivity;
 
 public class SplashScreen extends BaseActivity {
 
-
     private static final String TAG = "splash_screen_activity";
 
     @Override

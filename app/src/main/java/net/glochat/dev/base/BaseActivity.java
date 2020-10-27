@@ -10,7 +10,6 @@ import com.gyf.immersionbar.ImmersionBar;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-
 public abstract class BaseActivity extends AppCompatActivity {
     protected Unbinder unbinder;
     @Override

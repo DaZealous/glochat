@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -34,10 +35,12 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import net.glochat.dev.R;
 import net.glochat.dev.base.BaseActivity;
 import net.glochat.dev.models.Users;
+import net.glochat.dev.view.CircleImageView;
 
 
 import java.util.HashMap;
@@ -54,16 +57,18 @@ public class CreateProfileActivity extends BaseActivity {
     private FirebaseUser firebaseUser;
     private DatabaseReference firebaseDatabase;
     private StorageReference storageReference;
-    private Uri uri;
+    private Uri uri, providerUri;
 
     public static final int REQUEST_IMAGE = 100;
 
+    @BindView(R.id.activity_create_profile_image)
+    de.hdodenhof.circleimageview.CircleImageView profileImage;
     @BindView(R.id.profile_pic)
-    ImageView profileImage;
+    ImageButton profile_pic;
     @BindView(R.id.full_name)
     TextInputEditText fullName;
-    @BindView(R.id.status)
-    TextInputEditText status;
+    @BindView(R.id.username)
+    TextInputEditText username;
     @BindView(R.id.proceed_button)
     RelativeLayout button;
     @BindView(R.id.progress_bar)
@@ -72,18 +77,19 @@ public class CreateProfileActivity extends BaseActivity {
     TextView proceedText;
 
 
-
     @Override
     protected void onCreate() {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance().getReference().child("users");
 
-
         String displayName = firebaseUser.getDisplayName();
-        if (displayName != null) {
+        providerUri = firebaseUser.getPhotoUrl();
+
+        if (providerUri != null)
+            loadProfilePic(providerUri);
+
+        if (displayName != null)
             fullName.setText(displayName);
-            status.setText(displayName.replace(" ", "."));
-        }
 
     }
 
@@ -95,52 +101,72 @@ public class CreateProfileActivity extends BaseActivity {
 
         else if (TextUtils.isEmpty(getStatus()))
             Toast.makeText(this, "Enter your username", Toast.LENGTH_SHORT).show();
-        else if (uri == null)
+        else if (uri == null && providerUri == null)
             Toast.makeText(this, "Select a profile photo", Toast.LENGTH_SHORT).show();
         else {
-            progressBar.setVisibility(View.VISIBLE);
-            proceedText.setVisibility(View.GONE);
-            Users userBean = new Users();
-            storageReference = FirebaseStorage.getInstance().getReference().child("profile_images/"+ uri.getLastPathSegment());
-            UploadTask uploadTask = storageReference.putFile(uri);
+            if(uri != null) {
+                progressBar.setVisibility(View.VISIBLE);
+                proceedText.setVisibility(View.GONE);
+                Users userBean = new Users();
+                storageReference = FirebaseStorage.getInstance().getReference().child("profile_images/" + uri.getLastPathSegment());
+                UploadTask uploadTask = storageReference.putFile(uri);
 
-            uploadTask.addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    task.getResult().getStorage().getDownloadUrl().addOnCompleteListener(task1 -> {
-                        if (task1.isSuccessful()) {
-                            Uri downloadUrl = task1.getResult();
+                uploadTask.addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        task.getResult().getStorage().getDownloadUrl().addOnCompleteListener(task1 -> {
+                            if (task1.isSuccessful()) {
+                                Uri downloadUrl = task1.getResult();
 
-                            userBean.setPhotoUrl(downloadUrl.toString());
-                            userBean.setName(getFullName());
-                            userBean.setUid(firebaseUser.getUid());
-                            userBean.setBio(getStatus());
-                            userBean.setFollowers("0");
-                            userBean.setFollowing("0");
-                            userBean.setPosts("0");
+                                userBean.setPhotoUrl(downloadUrl.toString());
+                                userBean.setName(getFullName());
+                                userBean.setUid(firebaseUser.getUid());
+                                userBean.setBio(getStatus());
+                                userBean.setFollowers("0");
+                                userBean.setFollowing("0");
+                                userBean.setPosts("0");
 
-                            firebaseDatabase.child(firebaseUser.getUid()).setValue(userBean).addOnCompleteListener(task2 -> {
+                               setUser(userBean);
 
-                                String token_id= FirebaseInstanceId.getInstance().getToken();
-                                Map addValue = new HashMap();
-                                addValue.put("device_token", token_id);
-                                addValue.put("online","true");
+                            } else {
+                                System.out.println("failed");
+                            }
+                        });
+                    }
+                });
 
-                                firebaseDatabase.child(firebaseUser.getUid()).updateChildren(addValue, (error, ref) -> {
-                                    Toast.makeText(this, "Account Created Successfully", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(this, MainActivity.class));
-                                    finish();
-                                });
+            }else{
+                progressBar.setVisibility(View.VISIBLE);
+                proceedText.setVisibility(View.GONE);
 
-                            });
-                        } else {
-                            System.out.println("failed");
-                        }
-                    });
-                }
+                Users userBean = new Users();
+                userBean.setPhotoUrl(providerUri.toString());
+                userBean.setName(getFullName());
+                userBean.setUid(firebaseUser.getUid());
+                userBean.setBio(getStatus());
+                userBean.setFollowers("0");
+                userBean.setFollowing("0");
+                userBean.setPosts("0");
+
+                setUser(userBean);
+            }
+        }
+    }
+
+    private void setUser(Users userBean) {
+        firebaseDatabase.child(firebaseUser.getUid()).setValue(userBean).addOnCompleteListener(task2 -> {
+
+            String token_id = FirebaseInstanceId.getInstance().getToken();
+            Map addValue = new HashMap();
+            addValue.put("device_token", token_id);
+            addValue.put("online", "true");
+
+            firebaseDatabase.child(firebaseUser.getUid()).updateChildren(addValue, (error, ref) -> {
+                Toast.makeText(this, "Account Created Successfully", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
             });
 
-
-        }
+        });
     }
 
     @Override
@@ -174,7 +200,7 @@ public class CreateProfileActivity extends BaseActivity {
 
 
     private void showImagePickerOptions() {
-        ImagePickerActivity.showImagePickerOptions(this, new ImagePickerActivity.PickerOptionListener() {
+        /*ImagePickerActivity.showImagePickerOptions(this, new ImagePickerActivity.PickerOptionListener() {
             @Override
             public void onTakeCameraSelected() {
                 launchCameraIntent();
@@ -184,18 +210,26 @@ public class CreateProfileActivity extends BaseActivity {
             public void onChooseGallerySelected() {
                 launchGalleryIntent();
             }
-        });
+        });*/
+        CropImage.activity()
+                .setAspectRatio(1, 1)
+                .setAutoZoomEnabled(true)
+                .setMinCropWindowSize(500, 500)
+                .start(this);
     }
 
     private void showSettingsDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.dialog_permission_title))
                 .setMessage(getString(R.string.dialog_permission_message))
-                .setPositiveButton(getString(R.string.go_to_settings), dialogClickListener).setNegativeButton(getString(android.R.string.cancel), dialogClickListener).show();
+                .setPositiveButton(getString(R.string.go_to_settings), dialogClickListener)
+                .setNegativeButton(getString(android.R.string.cancel), dialogClickListener)
+                .show();
 
     }
+
     DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
-        switch (which){
+        switch (which) {
             case DialogInterface.BUTTON_POSITIVE:
                 dialog.cancel();
                 openSettings();
@@ -215,9 +249,7 @@ public class CreateProfileActivity extends BaseActivity {
     }
 
     private void loadProfilePic(Uri bitmap) {
-
-        Glide.with(this).load(bitmap)
-                .into(profileImage);
+        Glide.with(this).load(bitmap).placeholder(R.drawable.profile_placeholder).into(profileImage);
     }
 
     private void launchCameraIntent() {
@@ -245,11 +277,13 @@ public class CreateProfileActivity extends BaseActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE) {
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK && data != null) {
 
-                uri = data.getParcelableExtra("path");
+                //uri = data.getParcelableExtra("path");
+                uri = CropImage.getActivityResult(data).getUri();
                 loadProfilePic(uri);
+
                 /*try {
 
                     final InputStream imageStream = this.getContentResolver().openInputStream(uri);
@@ -259,12 +293,13 @@ public class CreateProfileActivity extends BaseActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }*/
+
             }
         }
     }
 
     public String getStatus() {
-        return status.getText().toString();
+        return username.getText().toString();
     }
 
     public String getFullName() {

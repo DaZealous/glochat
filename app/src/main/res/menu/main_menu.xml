@@ -4,9 +4,16 @@
     tools:context="net.glochat.dev.activity.ScrollingActivity">
 
     <item
+        android:orderInCategory="50"
         android:id="@+id/search_button"
-        android:orderInCategory="100"
         android:title="@string/search"
         android:icon="@drawable/ic_search"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/notification_button"
+        android:orderInCategory="50"
+        android:title="@string/notification"
+        android:icon="@drawable/ic_notifications_white_24"
         app:showAsAction="ifRoom" />
 </menu>

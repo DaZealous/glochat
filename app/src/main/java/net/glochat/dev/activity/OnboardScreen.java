@@ -3,13 +3,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import com.codemybrainsout.onboarder.AhoyOnboarderActivity;
 import com.codemybrainsout.onboarder.AhoyOnboarderCard;
-
 import net.glochat.dev.R;
-import net.glochat.dev.activity.auth.PhoneAuthActivity;
-
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class OnboardScreen extends AhoyOnboarderActivity {
 
@@ -17,10 +13,10 @@ public class OnboardScreen extends AhoyOnboarderActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        AhoyOnboarderCard ahoyOnboarderCard1 = new AhoyOnboarderCard("", getString(R.string.onboard_text_first), R.drawable.ic_video_cam);
-        AhoyOnboarderCard ahoyOnboarderCard2 = new AhoyOnboarderCard("", getString(R.string.onboard_text_second), R.drawable.ic_chat_onboard);
-        AhoyOnboarderCard ahoyOnboarderCard3 = new AhoyOnboarderCard("", getString(R.string.onboard_text_third), R.drawable.ic_camera);
-        AhoyOnboarderCard ahoyOnboarderCard4 = new AhoyOnboarderCard("", getString(R.string.onboard_text_fourth), R.drawable.ic_call);
+        AhoyOnboarderCard ahoyOnboarderCard1 = new AhoyOnboarderCard("", getString(R.string.onboard_text_first), R.drawable.ic_undraw_online_video);
+        AhoyOnboarderCard ahoyOnboarderCard2 = new AhoyOnboarderCard("", getString(R.string.onboard_text_second), R.drawable.ic_undraw_online_messaging);
+        AhoyOnboarderCard ahoyOnboarderCard3 = new AhoyOnboarderCard("", getString(R.string.onboard_text_third), R.drawable.ic_undraw_camera);
+        AhoyOnboarderCard ahoyOnboarderCard4 = new AhoyOnboarderCard("", getString(R.string.onboard_text_fourth), R.drawable.ic_undraw_calling);
 
         ahoyOnboarderCard1.setBackgroundColor(R.color.black_transparent);
         ahoyOnboarderCard2.setBackgroundColor(R.color.black_transparent);

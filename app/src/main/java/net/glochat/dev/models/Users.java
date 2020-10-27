@@ -1,14 +1,17 @@
 package net.glochat.dev.models;
 
-public class Users {
-    private String uid;
-    private String name;
-    private String online;
-    private String bio;
-    private String photoUrl;
-    private String posts;
-    private String followers;
-    private String following;
+import java.io.Serializable;
+
+public class Users implements Serializable {
+    private String uid = "";
+    private String name = "";
+    private String online = "";
+    private String bio = "";
+    private String photoUrl = "";
+    private String posts = "";
+    private String followers = "";
+    private String following = "";
+    private Long time_stamp = 0L;
 
     public Users(){
 
@@ -78,6 +81,14 @@ public class Users {
         this.following = following;
     }
 
+    public Long getTime_stamp() {
+        return time_stamp;
+    }
+
+    public void setTime_stamp(Long time_stamp) {
+        this.time_stamp = time_stamp;
+    }
+
     @Override
     public String toString() {
         return "Users{" +
@@ -91,4 +102,5 @@ public class Users {
                 ", following='" + following + '\'' +
                 '}';
     }
+
 }

@@ -6,6 +6,7 @@
     <color name="white">#fff</color>
     <color name="grey">#BFBFBF</color>
     <color name="black">#000000</color>
+    <color name="blue">#0B5BBC</color>
 
     <color name="transparent">#00000000</color>
     <color name="color_FF0041">#ff2c54</color>
@@ -18,5 +19,6 @@
     <color name="google_button_color_pressed">#FFA43528</color>
 
     <color name="button_pressed_text_color">#bcbcbc</color>
+    <color name="cyan">#36A4B8</color>
 
 </resources>

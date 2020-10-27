@@ -1,10 +1,6 @@
 package net.glochat.dev.fragment.home;
 
-
-import android.content.Intent;
 import android.os.CountDownTimer;
-
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;

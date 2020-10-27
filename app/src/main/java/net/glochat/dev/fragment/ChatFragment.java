@@ -1,19 +1,19 @@
 package net.glochat.dev.fragment;
 
 
-
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 
 import com.bumptech.glide.Glide;
@@ -37,33 +37,45 @@ import net.glochat.dev.R;
 import net.glochat.dev.activity.ChatActivity;
 import net.glochat.dev.activity.ContactActivity;
 import net.glochat.dev.activity.FriendActivity;
+import net.glochat.dev.adapter.ChatHistoryAdapter;
 import net.glochat.dev.base.BaseFragment;
 import net.glochat.dev.bean.DataCreate;
+import net.glochat.dev.models.Conv;
 import net.glochat.dev.models.Conversation;
 import net.glochat.dev.models.Users;
 import net.glochat.dev.utils.Constants;
 
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class ChatFragment extends BaseFragment {
+public class ChatFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    @BindView(R.id.recycler_view)
-    RecyclerView recyclerView;
+    @BindView(R.id.activity_chat_history_recycler_view)
+    RecyclerView mConvList;
     @BindView(R.id.fab)
     FloatingActionButton floatingActionButton;
+    @BindView(R.id.activity_chat_history_swipe_refresh)
+    SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.fragments_chat_no_recent_chat_layout)
+    LinearLayout noChatLayout;
+
+    List<String> list;
+    List<Conv> convs;
+
+    ChatHistoryAdapter adapter;
+    private DatabaseReference mConvDatabase;
+    private DatabaseReference mMessageDatabase;
+    private DatabaseReference mUsersDatabase;
+    private String mCurrent_user_id;
 
     private FirebaseUser firebaseUser;
-    private DatabaseReference mConvDatabase;
-    private DatabaseReference mUsersDatabase;
-    private DatabaseReference mMessageDatabase;
-
-    private String currentUserID;
-
 
 
     public ChatFragment() {
@@ -72,7 +84,7 @@ public class ChatFragment extends BaseFragment {
 
 
     @OnClick(R.id.fab)
-    void setFloatingActionButton(){
+    void setFloatingActionButton() {
 
         startActivity(new Intent(getActivity(), FriendActivity.class));
 
@@ -85,32 +97,37 @@ public class ChatFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        currentUserID = firebaseUser.getUid();
+        mCurrent_user_id = firebaseUser.getUid();
+        mConvDatabase = FirebaseDatabase.getInstance().getReference().child("Chat").child(mCurrent_user_id);
 
-        mConvDatabase = FirebaseDatabase.getInstance().getReference().child("chats").child(currentUserID);
         mConvDatabase.keepSynced(true);
-
-        mUsersDatabase = FirebaseDatabase.getInstance().getReference().child(Constants.USERS);
+        mUsersDatabase = FirebaseDatabase.getInstance().getReference().child("users");
+        mMessageDatabase = FirebaseDatabase.getInstance().getReference().child("messages").child(mCurrent_user_id);
         mUsersDatabase.keepSynced(true);
 
-        mMessageDatabase = FirebaseDatabase.getInstance().getReference().child(Constants.MESSAGES).child(currentUserID);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
     protected void onViewCreated() {
 
-
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
 
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(linearLayoutManager);
+        list = new ArrayList<>();
+        convs = new ArrayList<>();
+        mConvList.setHasFixedSize(true);
+        mConvList.setLayoutManager(linearLayoutManager);
+        adapter = new ChatHistoryAdapter(list, convs, requireContext());
+        mConvList.setAdapter(adapter);
+
+        swipeRefreshLayout.setOnRefreshListener(this);
+
+        loadHistory();
 
         //ChatPageAdapter adapter = new ChatPageAdapter(getActivity(), DataCreate.datas);
-       // recyclerView.setAdapter(adapter);
+        // recyclerView.setAdapter(adapter);
 
     }
 
@@ -119,131 +136,74 @@ public class ChatFragment extends BaseFragment {
         return R.layout.fragment_chat;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+    protected void loadHistory() {
+        swipeRefreshLayout.setRefreshing(true);
+        noChatLayout.setVisibility(View.GONE);
+        list.clear();
+        convs.clear();
+        adapter.notifyDataSetChanged();
 
+        Query conversationQuery = mConvDatabase.orderByChild("time_stamp");
 
-        Query query = mConvDatabase; //.orderByChild("time_stamp");
-
-        SnapshotParser<Conversation> parser = snapshot -> snapshot.getValue(Conversation.class);
-
-        FirebaseRecyclerOptions<Conversation> options =
-                new FirebaseRecyclerOptions.Builder<Conversation>()
-                        .setQuery(query, parser)
-                        .build();
-
-
-        FirebaseRecyclerAdapter<Conversation, ConversationViewHolder> friendsRecycleAdapter =
-                new FirebaseRecyclerAdapter<Conversation, ConversationViewHolder>(options) {
-
-
-            @NonNull
+        conversationQuery.addValueEventListener(new ValueEventListener() {
             @Override
-            public ConversationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.data_item_chat, parent, false);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
+                if (dataSnapshot1.hasChildren()) {
+                    list.clear();
+                    convs.clear();
+                    adapter.notifyDataSetChanged();
+                    mMessageDatabase.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
+                            list.clear();
+                            convs.clear();
+                            adapter.notifyDataSetChanged();
+                            for (DataSnapshot snap : dataSnapshot1.getChildren()) {
+                                if (snap.child("type").getValue(String.class) != null) {
+                                    if (snap.child("type").getValue(String.class).equals("user")) {
+                                        if (dataSnapshot2.child(Objects.requireNonNull(snap.getKey())).exists())
+                                            if (snap.child("time_stamp").getValue(Long.class) != null) {
+                                                list.add(snap.getKey());
+                                                convs.add(snap.getValue(Conv.class));
+                                            }
+                                    } else {
+                                        if (snap.child("time_stamp").getValue(Long.class) != null) {
+                                            list.add(snap.getKey());
+                                            convs.add(snap.getValue(Conv.class));
+                                        }
+                                    }
+                                }
+                            }
+                            swipeRefreshLayout.setRefreshing(false);
+                            if (list.isEmpty())
+                                noChatLayout.setVisibility(View.VISIBLE);
+                            else {
+                                noChatLayout.setVisibility(View.GONE);
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
 
-                return new ConversationViewHolder(view);
-            }
-
-            @Override
-            protected void onBindViewHolder(@NonNull ConversationViewHolder holder, int position, @NonNull Conversation model) {
-                final String userId = getRef(position).getKey();
-                Query lastMessageQuery = mMessageDatabase.child(userId).limitToLast(1);
-
-                lastMessageQuery.addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
-                        String data = dataSnapshot.child("message").getValue().toString();
-                        holder.lastMessage.setText(data);
-
-                    }
-
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-                mUsersDatabase.child(userId).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Users user = dataSnapshot.getValue(Users.class);
-                        final String userName = user.getName();
-                        String userThumb = user.getPhotoUrl();
-
-                        if(dataSnapshot.hasChild("online")){
-
-                            String userOnline = dataSnapshot.child("online").getValue().toString();
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
                         }
-                        holder.friendName.setText(userName);
-                        loadProfile(userThumb, holder);
-
-                        holder.itemView.setOnClickListener(v -> {
-
-                            Intent chatIntent = new Intent(getContext(), ChatActivity.class);
-                            chatIntent.putExtra("user_id", userId);
-                            chatIntent.putExtra("user_name", userName);
-                            startActivity(chatIntent);
-                        });
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
+                    });
+                } else {
+                    swipeRefreshLayout.setRefreshing(false);
+                    noChatLayout.setVisibility(View.VISIBLE);
+                }
             }
 
-
-            private void loadProfile(String bitmap, ConversationViewHolder holder) {
-
-                Glide.with(ChatFragment.this).load(bitmap)
-                        .into(holder.friendProfilePic);
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                swipeRefreshLayout.setRefreshing(false);
             }
-
-        };
-        recyclerView.setAdapter(friendsRecycleAdapter);
-    }
-
-
-
-    public static class ConversationViewHolder extends RecyclerView.ViewHolder{
-
-        ImageView friendProfilePic;
-        TextView friendName;
-        TextView lastMessage;
-        TextView messageTime;
-
-
-        public ConversationViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            friendProfilePic = itemView.findViewById(R.id.user_img);
-            friendName = itemView.findViewById(R.id.user_name);
-            lastMessage = itemView.findViewById(R.id.last_message);
-            messageTime = itemView.findViewById(R.id.message_time);
-        }
+        });
 
     }
 
+    @Override
+    public void onRefresh() {
+        loadHistory();
+    }
 }

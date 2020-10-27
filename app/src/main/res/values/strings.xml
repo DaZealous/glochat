@@ -34,10 +34,10 @@
     <string name="icon_like_fill">&#xe60d;</string>
     <string name="icon_comment">&#xe621;</string>
     <string name="icon_more">&#xe61b;</string>
-    <string name="onboard_text_first">Have more fun and ease stress with amazing videos around the globe.\nRecord, edit and share your videos with the world</string>
-    <string name="onboard_text_second">Enjoy seamless IM, Voice/Video Calls with loved ones, family and friends anywhere anytime with GloChat</string>
-    <string name="onboard_text_third">Time to take, edit and share amazing photos with the world. Showcase your style in colours and stylish text with GloChat Photos</string>
-    <string name="onboard_text_fourth">Now you can communicate with the world freely. Enjoy unlimited in-app-calls and app-to-local-calls anytime anywhere free of charge with GloChat App</string>
+    <string name="onboard_text_first">Have more fun with amazing videos.</string>
+    <string name="onboard_text_second">Enjoy seamless Instant Messaging and Voice/Video Calls</string>
+    <string name="onboard_text_third">Time to take, edit and share amazing photos.</string>
+    <string name="onboard_text_fourth">Now you can communicate with the world freely.</string>
     <string name="title_activity_scrolling">ScrollingActivity</string>
 
     <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
@@ -64,4 +64,13 @@
     <string name="photos">""</string>
     <string name="videos">""</string>
     <string name="trans">trans</string>
+    <string name="image_button">Image Button</string>
+    <string name="name">Name</string>
+    <string name="username">Username</string>
+    <string name="imageButton">Image Button</string>
+    <string name="user_blocked">User Blocked</string>
+    <string name="type_a_message">Type a message</string>
+    <string name="no_recent_chats_click_the_button_below_to_start_chatting">No recent chats, click the button below to start chatting.</string>
+    <string name="start_chat">Start Chat</string>
+    <string name="notification">Notification</string>
 </resources>

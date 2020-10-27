@@ -80,4 +80,10 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
+    //image cropper
+    api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+
+    //file chooser library
+    implementation 'com.github.jaiselrahman:FilePicker:1.3.2'
+
 }

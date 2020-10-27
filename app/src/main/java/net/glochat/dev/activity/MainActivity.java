@@ -3,12 +3,17 @@ package net.glochat.dev.activity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -27,32 +32,24 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.iid.FirebaseInstanceId;
-
 import net.glochat.dev.R;
-
 import net.glochat.dev.bean.MainPageChangeEvent;
 import net.glochat.dev.bean.PauseVideoEvent;
-
 import net.glochat.dev.fragment.ChatFragment;
-
 import net.glochat.dev.fragment.PhotoFragment;
-
 import net.glochat.dev.fragment.CallFragment;
 import net.glochat.dev.fragment.VideoFragment;
 import net.glochat.dev.models.Users;
 import net.glochat.dev.utils.RxBus;
 import net.glochat.dev.view.CircleImageView;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.functions.Action1;
 
 public class MainActivity extends AppCompatActivity {
+
     @BindView(R.id.viewpager)
     ViewPager viewPager;
     @BindView(R.id.toolbar)
@@ -61,20 +58,31 @@ public class MainActivity extends AppCompatActivity {
     CollapsingToolbarLayout toolbarLayout;
     @BindView(R.id.tabLayout)
     TabLayout tabLayout;
-    @BindView(R.id.profile_pic)
     CircleImageView profilePic;
 
     private FirebaseUser firebaseUser;
     private DatabaseReference mDatabaseReference;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setTitle("");
+
+        View view = LayoutInflater.from(this).inflate(R.layout.custom_toolbar_home, null);
+        profilePic = view.findViewById(R.id.profile_pic);
+
+        ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
+
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setCustomView(view, layout);
+
+        //toolbar.addView(view);
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("users");
@@ -84,15 +92,16 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
+        try {
 
+            mDatabaseReference.child(firebaseUser.getUid()).child("time_stamp").onDisconnect().setValue(ServerValue.TIMESTAMP);
+            mDatabaseReference.child(firebaseUser.getUid()).child("online").onDisconnect().setValue("false");
 
-        if (firebaseUser.getPhotoUrl() == null)
             mDatabaseReference.child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     Users value = snapshot.getValue(Users.class);
-                    Glide.with(getApplicationContext()).load(value.getPhotoUrl()).into(profilePic);
-
+                    Glide.with(getApplicationContext()).load(value.getPhotoUrl()).placeholder(R.drawable.profile_placeholder).into(profilePic);
                 }
 
                 @Override
@@ -101,16 +110,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-        else
-            Glide.with(this).load(firebaseUser.getPhotoUrl()).into(profilePic);
 
-
-        RxBus.getDefault().toObservable(MainPageChangeEvent.class)
-                .subscribe((Action1<MainPageChangeEvent>) event -> {
-                    if (viewPager != null) {
-                        viewPager.setCurrentItem(event.getPage());
-                    }
-                });
+            RxBus.getDefault().toObservable(MainPageChangeEvent.class)
+                    .subscribe((Action1<MainPageChangeEvent>) event -> {
+                        if (viewPager != null) {
+                            viewPager.setCurrentItem(event.getPage());
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -134,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
 
     }
 
@@ -165,16 +173,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    @Override
+
+   /* @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.main_menu, menu);
         return true;
 
-    }
+    }*/
+
     private void setTabLayoutIcons(){
-        tabLayout.getTabAt(0).setIcon(R.drawable.ic_video);
+        tabLayout.getTabAt(0).setIcon(R.drawable.home_video_camera_white);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_chat);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_photo);
         tabLayout.getTabAt(3).setIcon(R.drawable.ic_call);

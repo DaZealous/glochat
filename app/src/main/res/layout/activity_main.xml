@@ -1,11 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-  <!--  <androidx.fragment.app.FragmentContainerView
-        android:name="net.glochat.dev.fragment.MainFragment"
-        android:id="@+id/main_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
--->
-
   <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
@@ -40,29 +33,10 @@
                   android:layout_width="match_parent"
                   android:layout_height="?attr/actionBarSize"
                   app:layout_collapseMode="pin"
-                  app:title="@string/app_name"
                   app:popupTheme="@style/Theme.GloChat.PopupOverlay">
 
 
               </androidx.appcompat.widget.Toolbar>
-
-              <RelativeLayout
-                  android:layout_width="wrap_content"
-                  android:layout_height="?attr/actionBarSize"
-                  android:layout_gravity="end"
-                  android:layout_marginEnd="60dp">
-
-
-                  <net.glochat.dev.view.CircleImageView
-                      android:id="@+id/profile_pic"
-                      android:layout_width="40dp"
-                      android:layout_height="40dp"
-                      android:layout_centerInParent="true"
-                      app:es_shape_type="round"
-                      />
-              </RelativeLayout>
-
-
 
           </com.google.android.material.appbar.CollapsingToolbarLayout>
           <com.google.android.material.tabs.TabLayout
