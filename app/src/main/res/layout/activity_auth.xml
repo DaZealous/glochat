@@ -58,7 +58,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <!--<RelativeLayout
+        <RelativeLayout
             android:id="@+id/facebookSignInButton"
             android:layout_width="match_parent"
             android:layout_height="@dimen/base_login_button_height"
@@ -86,8 +86,7 @@
                 android:textColor="@drawable/login_button_text_selector" />
 
         </RelativeLayout>
--->
-       <!-- <RelativeLayout
+        <RelativeLayout
             android:id="@+id/googleSignInButton"
             android:layout_width="match_parent"
             android:layout_height="@dimen/base_login_button_height"
@@ -114,7 +113,7 @@
                 android:text="@string/continue_with_google"
                 android:textColor="@drawable/login_button_text_selector" />
 
-        </RelativeLayout>-->
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/emailSignInButton"
@@ -145,7 +144,7 @@
 
         </RelativeLayout>
 
-       <!-- <TextView
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
@@ -182,7 +181,7 @@
                 android:text="@string/continue_with_phone"
                 android:textColor="@drawable/login_button_text_selector" />
 
-        </RelativeLayout>-->
+        </RelativeLayout>
 
     </LinearLayout>
 

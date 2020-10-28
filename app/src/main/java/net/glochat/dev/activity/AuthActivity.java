@@ -43,15 +43,14 @@ public class AuthActivity extends BaseActivity {
     private static final int RC_SIGN_IN = 123;
     private static final String TAG = AuthActivity.class.getSimpleName();
 
-
     @Override
     protected void onCreate() {
 
         AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
                 .Builder(R.layout.activity_auth)
-                /*   .setPhoneButtonId(R.id.phoneSignInButton)
+                   .setPhoneButtonId(R.id.phoneSignInButton)
                    .setGoogleButtonId(R.id.googleSignInButton)
-                   .setFacebookButtonId(R.id.facebookSignInButton)*/
+                   .setFacebookButtonId(R.id.facebookSignInButton)
                 .setEmailButtonId(R.id.emailSignInButton)
                 .build();
 
@@ -60,9 +59,9 @@ public class AuthActivity extends BaseActivity {
                         .createSignInIntentBuilder()
                         .setIsSmartLockEnabled(!BuildConfig.DEBUG /* credentials */, true /* hints */)
                         .setAvailableProviders(Arrays.asList(
-                              /*  new AuthUI.IdpConfig.GoogleBuilder().build(),
+                                new AuthUI.IdpConfig.GoogleBuilder().build(),
                                 new AuthUI.IdpConfig.FacebookBuilder().build(),
-                                new AuthUI.IdpConfig.PhoneBuilder().build(),*/
+                                new AuthUI.IdpConfig.PhoneBuilder().build(),
                                 new AuthUI.IdpConfig.EmailBuilder().build()))
                         .setAuthMethodPickerLayout(customLayout)
                         .setTheme(R.style.Theme_GloChat)
@@ -98,9 +97,7 @@ public class AuthActivity extends BaseActivity {
                     Toast.makeText(this, "Sign In cancelled", Toast.LENGTH_SHORT).show();
                 }
 
-
                 Toast.makeText(this, "Sign in failed, please try again later", Toast.LENGTH_SHORT).show();
-
 
             }
             finish();
