@@ -33,14 +33,23 @@ public class UsersListViewHolder extends RecyclerView.ViewHolder {
         layoutContainer = itemView.findViewById(R.id.users_list_layout_profile_container);
     }
 
-    public void initView(Context context, Users users) {
+    public void initView(Context context, Users user) {
 
-        Glide.with(context.getApplicationContext()).load(users.getPhotoUrl()).placeholder(R.drawable.profile_placeholder).into(imgProfile);
+        Glide.with(context.getApplicationContext()).load(user.getPhotoUrl()).placeholder(R.drawable.profile_placeholder).into(imgProfile);
 
-        textFullName.setText(users.getName());
-        textUsername.setText(users.getBio());
+        textFullName.setText(user.getName());
+        textUsername.setText(user.getBio());
 
-        layoutContainer.setOnClickListener(view -> context.startActivity(new Intent(context, ChatActivity.class).putExtra("user", users)));
+        layoutContainer.setOnClickListener(view ->{
+            try {
+                context.startActivity(new Intent(context, ChatActivity.class)
+                    .putExtra("userID", user.getUid())
+                        .putExtra("username", user.getName())
+                        .putExtra("img_url", user.getPhotoUrl()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
     }
 

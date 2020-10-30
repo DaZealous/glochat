@@ -4,6 +4,7 @@ package net.glochat.dev.fragment;
 import android.os.CountDownTimer;
 import android.widget.LinearLayout;
 
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -27,7 +28,6 @@ public class VideoFragment extends BaseFragment {
     @BindView(R.id.camera_fab)
     FloatingActionButton cameraButton;
 
-
     public VideoFragment(){}
 
     public static VideoFragment newInstance() {
@@ -38,7 +38,7 @@ public class VideoFragment extends BaseFragment {
     protected void onViewCreated() {
         new DataCreate().initData();
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
 
         GridVideoAdapter adapter = new GridVideoAdapter(getActivity(), DataCreate.datas);
         recyclerView.setAdapter(adapter);

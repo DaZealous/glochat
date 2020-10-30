@@ -76,40 +76,38 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
 
                     if (dataSnapshot.exists()) {
                         ChatDao message = dataSnapshot.getValue(ChatDao.class);
-                   /* if(conv.isSeen())
+                    /*if(conv.isSeen())
                         holder.textSeen.setVisibility(View.GONE);
                     else{
                         holder.textSeen.setText("new");
                         holder.textSeen.setVisibility(View.VISIBLE);
                     }*/
-                   /* if(message.getMsg_type().equalsIgnoreCase("image")) {
-                        holder.imgMsgType.setImageResource(R.drawable.ic_image_grey_24dp);
-                        holder.imgMsgType.setVisibility(View.VISIBLE);
-                        holder.textMessage.setText("image");
-                    }
-                    else if(message.getMsg_type().equalsIgnoreCase("audio")) {
-                        holder.imgMsgType.setImageResource(R.drawable.ic_keyboard_voice_drey_24dp);
-                        holder.imgMsgType.setVisibility(View.VISIBLE);holder.textMessage.setText("audio");
-                    }
-                    else if(message.getMsg_type().equalsIgnoreCase("video")) {
-                        holder.imgMsgType.setImageResource(R.drawable.ic_videocam_grey_24dp);
-                        holder.imgMsgType.setVisibility(View.VISIBLE);
-                        holder.textMessage.setText("video");
-                    }
-                    else if(message.getMsg_type().equalsIgnoreCase("file")){
-                        holder.imgMsgType.setImageResource(R.drawable.ic_insert_drive_file_grey_24dp);
-                        holder.imgMsgType.setVisibility(View.VISIBLE);
-                        holder.textMessage.setText("document");
-                    }else if(message.getMsg_type().equalsIgnoreCase("contact")){
-                        holder.imgMsgType.setImageResource(R.drawable.ic_perm_contact_calendar_grey_24dp);
-                        holder.imgMsgType.setVisibility(View.VISIBLE);
-                        holder.textMessage.setText(message.getMsg_name());
-                    }
-                    else{*/
-                        holder.imgMsgType.setVisibility(View.GONE);
-                        holder.textMessage.setText(message.getMsg_body());
-                        holder.textTime.setText(DateUtils.getRelativeTimeSpanString(message.getTime_stamp()));
-                    } else {
+                        if (message.getMsg_type().equalsIgnoreCase("image")) {
+                            holder.imgMsgType.setImageResource(R.drawable.ic_image_grey_24dp);
+                            holder.imgMsgType.setVisibility(View.VISIBLE);
+                            holder.textMessage.setText("image");
+                        } else if (message.getMsg_type().equalsIgnoreCase("audio")) {
+                            holder.imgMsgType.setImageResource(R.drawable.ic_keyboard_voice_drey_24dp);
+                            holder.imgMsgType.setVisibility(View.VISIBLE);
+                            holder.textMessage.setText("audio");
+                        } else if (message.getMsg_type().equalsIgnoreCase("video")) {
+                            holder.imgMsgType.setImageResource(R.drawable.ic_videocam_grey_24dp);
+                            holder.imgMsgType.setVisibility(View.VISIBLE);
+                            holder.textMessage.setText("video");
+                        } else if (message.getMsg_type().equalsIgnoreCase("file")) {
+                            holder.imgMsgType.setImageResource(R.drawable.ic_insert_drive_file_grey_24dp);
+                            holder.imgMsgType.setVisibility(View.VISIBLE);
+                            holder.textMessage.setText("document");
+                        } else if (message.getMsg_type().equalsIgnoreCase("contact")) {
+                            holder.imgMsgType.setImageResource(R.drawable.ic_perm_contact_calendar_grey_24dp);
+                            holder.imgMsgType.setVisibility(View.VISIBLE);
+                            holder.textMessage.setText(message.getMsg_name());
+                        } else {
+                            holder.imgMsgType.setVisibility(View.GONE);
+                            holder.textMessage.setText(message.getMsg_body());
+                            holder.textTime.setText(DateUtils.getRelativeTimeSpanString(message.getTime_stamp()));
+                        }
+                    }else {
                         notifyItemRemoved(position);
                         notifyItemRangeChanged(position, list.size());
                     }
@@ -180,35 +178,32 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
                             holder.textSeen.setText("new");
                             holder.textSeen.setVisibility(View.VISIBLE);
                         }*/
-                       /* if (message.getMsg_type().equalsIgnoreCase("image")) {
+                        if (message.getMsg_type().equalsIgnoreCase("image")) {
                             holder.imgMsgType.setImageResource(R.drawable.ic_image_grey_24dp);
                             holder.imgMsgType.setVisibility(View.VISIBLE);
                             holder.textMessage.setText("image");
-                        }
-                        else if (message.getMsg_type().equalsIgnoreCase("audio")) {
+                        } else if (message.getMsg_type().equalsIgnoreCase("audio")) {
                             holder.imgMsgType.setImageResource(R.drawable.ic_keyboard_voice_drey_24dp);
                             holder.imgMsgType.setVisibility(View.VISIBLE);
                             holder.textMessage.setText("audio");
-                        }
-                        else if(message.getMsg_type().equalsIgnoreCase("video")) {
+                        } else if (message.getMsg_type().equalsIgnoreCase("video")) {
                             holder.imgMsgType.setImageResource(R.drawable.ic_videocam_grey_24dp);
                             holder.imgMsgType.setVisibility(View.VISIBLE);
                             holder.textMessage.setText("video");
-                        }
-                        else if(message.getMsg_type().equalsIgnoreCase("file")){
+                        } else if (message.getMsg_type().equalsIgnoreCase("file")) {
                             holder.imgMsgType.setImageResource(R.drawable.ic_insert_drive_file_grey_24dp);
                             holder.imgMsgType.setVisibility(View.VISIBLE);
                             holder.textMessage.setText("document");
-                        }else if(message.getMsg_type().equalsIgnoreCase("contact")){
+                        } else if (message.getMsg_type().equalsIgnoreCase("contact")) {
                             holder.imgMsgType.setImageResource(R.drawable.ic_perm_contact_calendar_grey_24dp);
                             holder.imgMsgType.setVisibility(View.VISIBLE);
                             holder.textMessage.setText(message.getMsg_name());
+                        } else {
+                            holder.imgMsgType.setVisibility(View.GONE);
+                            holder.textMessage.setText(message.getFrom().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()) ? "you : " + message.getMsg_body() : message.getFromUsername().split(" ")[0].toLowerCase() + " : " + message.getMsg_body());
+                            holder.textTime.setText(DateUtils.getRelativeTimeSpanString(message.getTime_stamp()));
                         }
-                        else {*/
-                        holder.imgMsgType.setVisibility(View.GONE);
-                        holder.textMessage.setText(message.getFrom().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()) ? "you : " + message.getMsg_body() : message.getFromUsername().split(" ")[0].toLowerCase() + " : " + message.getMsg_body());
-                        holder.textTime.setText(DateUtils.getRelativeTimeSpanString(message.getTime_stamp()));
-                    } else {
+                    }else {
                         notifyItemRemoved(position);
                         notifyItemRangeChanged(position, list.size());
                     }
@@ -337,10 +332,14 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
             imgMsgType = itemView.findViewById(R.id.user_chat_history_img_msg_type);
         }
 
-        private void startChat(Conv conv, Users users) {
+        private void startChat(Conv conv, Users user) {
             if (conv.type.equals("user"))
                 if (users != null)
-                    context.startActivity(new Intent(context, ChatActivity.class).putExtra("user", users));
+                    context.startActivity(new Intent(context, ChatActivity.class)
+                            .putExtra("userID", user.getUid())
+                            .putExtra("username", user.getName())
+                            .putExtra("img_url", user.getPhotoUrl()));
+                    //context.startActivity(new Intent(context, ChatActivity.class).putExtra("user", users));
         }
     }
 }

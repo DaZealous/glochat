@@ -63,11 +63,11 @@ public class FriendActivity extends BaseActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot snaps : snapshot.getChildren()) {
-                   Users users = snaps.getValue(Users.class);
-                    if (users != null) {
-                        if (!users.getUid().equals(mCurrentUserId))
-                            userList.add(users);
-                    }
+                            Users users = snaps.getValue(Users.class);
+                            if (users != null) {
+                                if (!users.getUid().equals(mCurrentUserId))
+                                    userList.add(users);
+                            }
                 }
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);

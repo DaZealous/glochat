@@ -12,6 +12,7 @@ public class Users implements Serializable {
     private String followers = "";
     private String following = "";
     private Long time_stamp = 0L;
+    private String phone = "";
 
     public Users(){
 
@@ -103,4 +104,11 @@ public class Users implements Serializable {
                 '}';
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 }

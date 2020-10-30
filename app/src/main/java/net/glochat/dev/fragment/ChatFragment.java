@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,15 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-
-import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.firebase.ui.database.SnapshotParser;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,16 +26,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import net.glochat.dev.R;
 
-import net.glochat.dev.activity.ChatActivity;
-import net.glochat.dev.activity.ContactActivity;
 import net.glochat.dev.activity.FriendActivity;
 import net.glochat.dev.adapter.ChatHistoryAdapter;
 import net.glochat.dev.base.BaseFragment;
-import net.glochat.dev.bean.DataCreate;
 import net.glochat.dev.models.Conv;
-import net.glochat.dev.models.Conversation;
-import net.glochat.dev.models.Users;
-import net.glochat.dev.utils.Constants;
 
 
 import java.util.ArrayList;
@@ -51,7 +37,6 @@ import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
