@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:emojicon="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_chat_parent_layout"
     tools:context=".activity.ChatActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -329,19 +331,30 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <EditText
+                <ImageButton
+                    android:id="@+id/activity_chat_choose_emoji"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/imageButton"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_emoji_mood_grey_24"
+                    android:visibility="visible" />
+
+                <hani.momanii.supernova_emoji_library.Helper.EmojiconEditText
                     android:id="@+id/activity_chat_edit_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
                     android:layout_weight="1"
                     android:autofillHints="editText"
                     android:background="@drawable/white_back_50_radius"
                     android:hint="@string/type_a_message"
                     android:inputType="textMultiLine"
+                    android:imeOptions="actionSend"
                     android:maxHeight="150dp"
-                    android:padding="15dp"
-                    android:textSize="15sp" />
+                    android:padding="10dp"
+                    android:textSize="18sp"
+                    emojicon:emojiconSize="18sp"/>
 
                 <ImageButton
                     android:id="@+id/activity_chat_img_attach"

@@ -69,7 +69,7 @@
     <string name="username">Username</string>
     <string name="imageButton">Image Button</string>
     <string name="user_blocked">User Blocked</string>
-    <string name="type_a_message">Type a message</string>
+    <string name="type_a_message">Type here</string>
     <string name="no_recent_chats_click_the_button_below_to_start_chatting">No recent chats, click the button below to start chatting.</string>
     <string name="start_chat">Start Chat</string>
     <string name="notification">Notification</string>

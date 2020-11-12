@@ -102,6 +102,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
+    //emoji library
+    implementation 'com.github.hani-momanii:SuperNova-Emoji:1.1'
 
 }
 repositories {

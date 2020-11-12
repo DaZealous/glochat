@@ -12,6 +12,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.media.MediaRecorder
 import android.net.Uri
@@ -48,6 +49,9 @@ import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.config.Configurations
 import com.jaiselrahman.filepicker.model.MediaFile
 import de.hdodenhof.circleimageview.CircleImageView
+import hani.momanii.supernova_emoji_library.Actions.EmojIconActions
+import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText
+import net.glochat.dev.ChangeChatBack
 import net.glochat.dev.adapter.ChatAdapter
 import net.glochat.dev.view.ChatsView
 import org.apache.commons.io.FileUtils
@@ -55,6 +59,7 @@ import net.glochat.dev.R
 import net.glochat.dev.adapter.MyAdapter
 import net.glochat.dev.models.ChatDao
 import net.glochat.dev.models.ContactModel
+import net.glochat.dev.utils.ChatDatabase
 import net.glochat.dev.utils.FileUtility
 import net.glochat.dev.utils.GetTimeAgo
 import net.glochat.dev.utils.KeyboardUtils
@@ -76,7 +81,8 @@ private lateinit var btnVideoPick: ImageButton
 private lateinit var btnDocumentPick: ImageButton
 private lateinit var btnContactPick: ImageButton
 private lateinit var popUpMenuBtn: ImageButton
-private lateinit var editText: EditText
+private lateinit var chooseEmoji: ImageButton
+private lateinit var editText: EmojiconEditText
 private lateinit var adapter: ChatAdapter
 private lateinit var list: ArrayList<ChatDao>
 private lateinit var userID: String
@@ -85,6 +91,7 @@ private lateinit var username: String
 private lateinit var otherUsername: String
 private lateinit var imgUrl: String
 private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+private lateinit var parentLayout: RelativeLayout
 private lateinit var imageView: ImageView
 private lateinit var chatBackImg: ImageView
 private var lastTime: Long = 0L
@@ -104,6 +111,8 @@ private lateinit var mImageStorage: StorageReference
 private lateinit var mLinearLayout: LinearLayoutManager
 private lateinit var textUsername: TextView
 private lateinit var textTimeStamp: TextView
+private lateinit var emojiIcons: EmojIconActions
+
 //private lateinit var textUserBlocked: TextView
 private lateinit var chooseFileLayout: LinearLayout
 private var isChooseFileVisible = false
@@ -148,6 +157,7 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
             swipeRefreshLayout = findViewById(R.id.activity_chat_swipe_refresh)
             textUsername = findViewById(R.id.activity_chat_text_username)
             textTimeStamp = findViewById(R.id.activity_chat_text_time)
+            chooseEmoji = findViewById(R.id.activity_chat_choose_emoji)
             chooseFileLayout =
                     findViewById(R.id.activity_chat_card_choose_file_layout)
             userImage =
@@ -163,6 +173,22 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
             popUpMenuBtn = findViewById(R.id.activity_chat_menu_options)
             //   textUserBlocked = findViewById(R.id.activity_chat_text_user_blocked)
             usernameLayout = findViewById(R.id.activity_chat_username_layout)
+            parentLayout = findViewById(R.id.activity_chat_parent_layout)
+
+           emojiIcons = EmojIconActions(this, parentLayout, editText, chooseEmoji)
+            emojiIcons.ShowEmojIcon()
+            emojiIcons.setIconsIds(R.drawable.ic_baseline_keyboard_grey_24, R.drawable.ic_emoji_mood_grey_24)
+
+            /*chooseEmoji.setOnClickListener {
+                *//*val emojiPopup = EmojiPopup.Builder.fromRootView(parentLayout).build(editText)
+                if (emojiPopup.isShowing) {
+                    chooseEmoji.setImageResource(R.drawable.ic_emoji_mood_grey_24)
+                    emojiPopup.dismiss()
+                } else {
+                    chooseEmoji.setImageResource(R.drawable.ic_baseline_keyboard_grey_24)
+                    emojiPopup.toggle();
+                }*//*
+            }*/
 
             //Place a call
 
@@ -174,12 +200,7 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
              activity_chat_menu_video.setOnClickListener {
                  callVideoButton()
              }*/
-            /*if (ChatDatabase(this).findChatImage("1") == null) chatBackImg.setImageResource(R.drawable.chat_back_img) else chatBackImg.setImageBitmap(
-                BitmapFactory.decodeByteArray(
-                    ChatDatabase(this).findChatImage("1"),
-                    0, ChatDatabase(this).findChatImage("1").length
-                )
-            )*/
+
             //rootFile = Environment.getExternalStorageDirectory()
 
 
@@ -292,25 +313,25 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
                                 imgAttach.isEnabled = false
                                 btnSend.isEnabled = false
                                 btnSend.alpha = 0.5f
-                               /* textUserBlocked.text = "You have been blocked by this user"
-                                textUserBlocked.visibility = View.VISIBLE*/
+                                /* textUserBlocked.text = "You have been blocked by this user"
+                                 textUserBlocked.visibility = View.VISIBLE*/
                             } else {
                                 editText.isEnabled = true
                                 editText.alpha = 1f
                                 imgAttach.isEnabled = true
                                 btnSend.isEnabled = true
                                 btnSend.alpha = 1f
-                               // textUserBlocked.visibility = View.INVISIBLE
+                                // textUserBlocked.visibility = View.INVISIBLE
                             }
                             if (!TextUtils.isEmpty(typing)) if (typing == "true") {
                                 textTimeStamp.text = "typing..."
                             } else {
                                 if (!TextUtils.isEmpty(online))
                                     textTimeStamp.text =
-                                        (if (online == "true") "Online" else "active : " + GetTimeAgo.getTimeAgo(
-                                                lastTime,
-                                                applicationContext
-                                        )) else textTimeStamp.text = ""
+                                            (if (online == "true") "Online" else "active : " + GetTimeAgo.getTimeAgo(
+                                                    lastTime,
+                                                    applicationContext
+                                            )) else textTimeStamp.text = ""
                             }
                         }
 
@@ -369,7 +390,7 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
         }
 
         try {
-            KeyboardUtils.addKeyboardToggleListener(this) {
+            /*KeyboardUtils.addKeyboardToggleListener(this) {
                 if (it) {
                     imgAttach.startAnimation(slideRight)
                     rootRef.child("Chat").child(otherUser).child(userID).child("typing")
@@ -379,12 +400,27 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
                     rootRef.child("Chat").child(otherUser).child(userID).child("typing")
                             .setValue("false")
                 }
-            }
+            }*/
 
+            emojiIcons.setKeyboardListener(object : EmojIconActions.KeyboardListener{
+                override fun onKeyboardClose() {
+                    imgAttach.startAnimation(slideLeft)
+                    rootRef.child("Chat").child(otherUser).child(userID).child("typing")
+                            .setValue("false")
+                }
+
+                override fun onKeyboardOpen() {
+                    imgAttach.startAnimation(slideRight)
+                    rootRef.child("Chat").child(otherUser).child(userID).child("typing")
+                            .setValue("true")
+                }
+
+            })
             btnSend.setOnClickListener { view: View? ->
                 if (isChat) {
                     if (!TextUtils.isEmpty(editText.text.toString())) {
                         sendMessage(editText.text.toString())
+                        //Toast.makeText(this, editText.text.toString(), Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     if (isRecording) {
@@ -548,7 +584,8 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
                 val options = arrayOf<CharSequence>(
                         if (isUserBlock) "Unblock User" else "Block User",
                         "Clear Chats",
-                        "Delete Conversations"
+                        "Delete Conversations",
+                        "Change Chat Wallpaper"
                 )
                 val builder =
                         AlertDialog.Builder(this)
@@ -560,6 +597,9 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
                         0 -> blockUser()
                         1 -> clearChats()
                         2 -> deleteConv()
+                        3 -> {
+                            startActivity(Intent(this, ChangeChatBack::class.java))
+                        }
                         else -> {
                         }
                     }
@@ -1389,7 +1429,7 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
         }
 
         if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-          //  Toast.makeText(this, "You may now place a call", Toast.LENGTH_LONG).show()
+            //  Toast.makeText(this, "You may now place a call", Toast.LENGTH_LONG).show()
         } else {
             Toast.makeText(
                     this,
@@ -1482,4 +1522,10 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
         return "com.google.android.apps.photos.content" == uri.authority
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (ChatDatabase(this).findChatImage("1") == null) chatBackImg.setImageResource(R.drawable.chat_back_img) else chatBackImg.setImageBitmap(
+                BitmapFactory.decodeByteArray(ChatDatabase(this).findChatImage("1"), 0, ChatDatabase(this).findChatImage("1").size)
+        )
+    }
 }
