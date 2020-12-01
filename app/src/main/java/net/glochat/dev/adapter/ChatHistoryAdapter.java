@@ -30,6 +30,7 @@ import net.glochat.dev.activity.ChatActivity;
 import net.glochat.dev.models.ChatDao;
 import net.glochat.dev.models.Conv;
 import net.glochat.dev.models.Users;
+import net.glochat.dev.utils.SharedPref;
 
 import java.util.List;
 
@@ -69,7 +70,51 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
         Query messageQuery = chatRef.limitToLast(1);
         DatabaseReference mUsersDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(id);
 
-        if (conv.type.equals("user"))
+        if (conv.type.equals("user")) {
+
+            FirebaseDatabase.getInstance().getReference().child("messages").child(id).child(new SharedPref(context).getUserId()).limitToLast(1).addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    try {
+                        if (snapshot.getValue(ChatDao.class) != null) {
+                            ChatDao message = snapshot.getValue(ChatDao.class);
+                            assert message != null;
+                            if (new SharedPref(context).getUserId().equals(message.getFrom())) {
+                                holder.imgIsRead.setVisibility(View.VISIBLE);
+                                if (message.getSeen())
+                                    holder.imgIsRead.setImageResource(R.drawable.ic_blue_done_all_24);
+                                else
+                                    holder.imgIsRead.setImageResource(R.drawable.ic_black_done_all_24);
+                            } else {
+                                holder.imgIsRead.setVisibility(View.GONE);
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
             messageQuery.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -107,7 +152,7 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
                             holder.textMessage.setText(message.getMsg_body());
                             holder.textTime.setText(DateUtils.getRelativeTimeSpanString(message.getTime_stamp()));
                         }
-                    }else {
+                    } else {
                         notifyItemRemoved(position);
                         notifyItemRangeChanged(position, list.size());
                     }
@@ -134,7 +179,7 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
 
                 }
             });
-        else {
+        } else {
             FirebaseDatabase.getInstance().getReference().child("messages").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -171,6 +216,8 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
                     if (dataSnapshot.exists()) {
+                        holder.imgIsRead.setVisibility(View.VISIBLE);
+                        holder.imgIsRead.setImageResource(R.drawable.ic_black_done_24);
                         ChatDao message = dataSnapshot.getValue(ChatDao.class);
                        /* if (conv.isSeen())
                             holder.textSeen.setVisibility(View.GONE);
@@ -203,7 +250,7 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
                             holder.textMessage.setText(message.getFrom().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()) ? "you : " + message.getMsg_body() : message.getFromUsername().split(" ")[0].toLowerCase() + " : " + message.getMsg_body());
                             holder.textTime.setText(DateUtils.getRelativeTimeSpanString(message.getTime_stamp()));
                         }
-                    }else {
+                    } else {
                         notifyItemRemoved(position);
                         notifyItemRangeChanged(position, list.size());
                     }
@@ -237,8 +284,10 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
                     users = dataSnapshot.getValue(Users.class);
-                    holder.textUsername.setText(users.getName());
-                    Glide.with(context).load(users.getPhotoUrl()).placeholder(conv.type.equals("user") ? R.drawable.profile_placeholder : R.drawable.ic_people_outline_grey_24dp).into(holder.circleImageView);
+                    if (users != null) {
+                        holder.textUsername.setText(users.getName());
+                        Glide.with(context).load(users.getPhotoUrl()).placeholder(conv.type.equals("user") ? R.drawable.profile_placeholder : R.drawable.ic_people_outline_grey_24dp).into(holder.circleImageView);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -317,7 +366,7 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
         TextView textUsername, textMessage, textTime, textTyping;
         CircleImageView circleImageView;
         LinearLayout linearLayout;
-        ImageView imgMsgType;
+        ImageView imgMsgType, imgIsRead;
 
         private viewHolder(@NonNull View itemView) {
             super(itemView);
@@ -330,6 +379,7 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
             textTyping = itemView.findViewById(R.id.user_chat_history_text_typing);
             // textOnline = itemView.findViewById(R.id.user_chat_history_text_online);
             imgMsgType = itemView.findViewById(R.id.user_chat_history_img_msg_type);
+            imgIsRead = itemView.findViewById(R.id.user_chat_history_image_is_read);
         }
 
         private void startChat(Conv conv, Users user) {
@@ -337,9 +387,9 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
                 if (users != null)
                     context.startActivity(new Intent(context, ChatActivity.class)
                             .putExtra("userID", user.getUid())
-                            .putExtra("username", user.getName())
+                            .putExtra("username", user.getBio())
                             .putExtra("img_url", user.getPhotoUrl()));
-                    //context.startActivity(new Intent(context, ChatActivity.class).putExtra("user", users));
+            //context.startActivity(new Intent(context, ChatActivity.class).putExtra("user", users));
         }
     }
 }

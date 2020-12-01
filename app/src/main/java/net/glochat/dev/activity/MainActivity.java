@@ -1,27 +1,20 @@
 package net.glochat.dev.activity;
 
-
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -35,21 +28,27 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.sinch.android.rtc.SinchError;
+
 import net.glochat.dev.R;
+import net.glochat.dev.SinchService;
+import net.glochat.dev.base.BaseActivity2;
 import net.glochat.dev.bean.MainPageChangeEvent;
 import net.glochat.dev.bean.PauseVideoEvent;
+import net.glochat.dev.fragment.CallFragment;
 import net.glochat.dev.fragment.ChatFragment;
 import net.glochat.dev.fragment.PhotoFragment;
-import net.glochat.dev.fragment.CallFragment;
 import net.glochat.dev.fragment.VideoFragment;
 import net.glochat.dev.models.Users;
 import net.glochat.dev.utils.RxBus;
+import net.glochat.dev.utils.SharedPref;
 import net.glochat.dev.view.CircleImageView;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.functions.Action1;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity2 implements SinchService.StartFailedListener {
 
     @BindView(R.id.viewpager)
     ViewPager viewPager;
@@ -60,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.tabLayout)
     TabLayout tabLayout;
     CircleImageView profilePic;
+    Users value;
 
     private FirebaseUser firebaseUser;
     private DatabaseReference mDatabaseReference;
@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("users");
-        mDatabaseReference.keepSynced(true);
 
         PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), getApplicationContext());
         viewPager.setAdapter(pagerAdapter);
@@ -105,20 +104,6 @@ public class MainActivity extends AppCompatActivity {
 
             mDatabaseReference.child(firebaseUser.getUid()).child("time_stamp").onDisconnect().setValue(ServerValue.TIMESTAMP);
             mDatabaseReference.child(firebaseUser.getUid()).child("online").onDisconnect().setValue("false");
-
-            mDatabaseReference.child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    Users value = snapshot.getValue(Users.class);
-                    Glide.with(getApplicationContext()).load(value.getPhotoUrl()).placeholder(R.drawable.profile_placeholder).into(profilePic);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-
 
             RxBus.getDefault().toObservable(MainPageChangeEvent.class)
                     .subscribe((Action1<MainPageChangeEvent>) event -> {
@@ -141,8 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (position == 0) {
                     RxBus.getDefault().post(new PauseVideoEvent(true));
-                }
-                else if (position == 1) {
+                } else if (position == 1) {
                     RxBus.getDefault().post(new PauseVideoEvent(false));
                 }
             }
@@ -155,11 +139,37 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void startCall() {
+
+        try {
+            mDatabaseReference.child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    value = snapshot.getValue(Users.class);
+                    Glide.with(getApplicationContext()).load(value.getPhotoUrl()).placeholder(R.drawable.profile_placeholder).into(profilePic);
+                    new SharedPref(MainActivity.this).addUser(value);
+                    if (!getSinchServiceInterface().isStarted()) {
+                        getSinchServiceInterface().startClient(new SharedPref(MainActivity.this).getUsername());
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
         mDatabaseReference.child(firebaseUser.getUid()).child("online").setValue("true");
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -181,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
    /* @Override
@@ -192,11 +203,21 @@ public class MainActivity extends AppCompatActivity {
 
     }*/
 
-    private void setTabLayoutIcons(){
+    private void setTabLayoutIcons() {
         tabLayout.getTabAt(0).setIcon(R.drawable.home_video_camera_white);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_chat);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_photo);
         tabLayout.getTabAt(3).setIcon(R.drawable.ic_call);
+    }
+
+    @Override
+    public void onStartFailed(SinchError error) {
+        Toast.makeText(this, error.toString(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onStarted() {
+
     }
 
     private static class PagerAdapter extends FragmentPagerAdapter {
@@ -223,7 +244,6 @@ public class MainActivity extends AppCompatActivity {
                     return new PhotoFragment();
                 case 3:
                     return new CallFragment();
-
             }
             return null;
         }
@@ -242,8 +262,17 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public CharSequence getPageTitle(int position) {
 
-            return  context.getResources().getString(TAB_TITLES[position]);
+            return context.getResources().getString(TAB_TITLES[position]);
         }
     }
+
+    @Override
+    protected void onServiceConnected() {
+        super.onServiceConnected();
+        // Toast.makeText(this, "started...", Toast.LENGTH_SHORT).show();
+        getSinchServiceInterface().setStartListener(this);
+        startCall();
+    }
+
 
 }

@@ -14,7 +14,6 @@ public class PhotoFragment extends BaseFragment {
         return new PhotoFragment();
     }
 
-
     @Override
     protected void onViewCreated() {
 
@@ -22,7 +21,7 @@ public class PhotoFragment extends BaseFragment {
 
     @Override
     protected int setLayoutView() {
-        return R.layout.fragment_search;
+        return R.layout.fragment_user_photo;
     }
 
 

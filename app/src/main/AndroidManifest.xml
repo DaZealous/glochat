@@ -37,7 +37,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GloChat">
-        <activity android:name=".ChangeChatBack"></activity>
+        <activity android:name=".ChangeChatBack" />
         <activity android:name=".activity.FriendActivity" />
         <activity android:name=".activity.ShowImageActivity" />
         <activity android:name=".activity.FileViewer" />
@@ -54,6 +54,8 @@
         <activity android:name=".activity.auth.ProfileInfo" />
         <activity android:name=".activity.CameraActivity" />
         <activity android:name=".activity.ChatActivity" />
+
+        <service android:name=".SinchService" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -109,11 +111,18 @@
             android:name=".activity.PlayListActivity"
             android:screenOrientation="portrait" />
 
-        <service android:name=".managers.FirebaseMessagingService">
+        <activity
+            android:name=".activity.CallVideoOrAudio"
+            android:screenOrientation="portrait" />
+
+        <service android:name=".managers.FirebaseMessagingService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <service android:name=".SinchService" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -128,6 +137,21 @@
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
+
+        <activity
+            android:name=".activity.CallScreenActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.IncomingCallScreenActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.VideoCallScreenActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name=".activity.IncomingVideoCallScreenActivity"
+            android:noHistory="true"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>

@@ -1,7 +1,6 @@
 package net.glochat.dev.activity
 
 import android.Manifest
-import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
@@ -10,9 +9,6 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContentProviderCompat.requireContext
-import butterknife.BindView
-import butterknife.OnClick
 import com.bumptech.glide.Glide
 import com.google.android.gms.tasks.Task
 import com.google.android.material.textfield.TextInputEditText
@@ -33,6 +29,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 import net.glochat.dev.R
 import net.glochat.dev.base.BaseActivity
 import net.glochat.dev.models.Users
+import net.glochat.dev.utils.SharedPref
 import java.util.*
 
 class CreateProfileActivity : BaseActivity() {
@@ -148,6 +145,7 @@ class CreateProfileActivity : BaseActivity() {
             addValue["online"] = "true"
             firebaseDatabase!!.child(firebaseUser!!.uid).updateChildren(addValue, DatabaseReference.CompletionListener { error: DatabaseError?, ref: DatabaseReference? ->
                 Toast.makeText(this, "Account Created Successfully", Toast.LENGTH_SHORT).show()
+                SharedPref.getInstance(this).addUser(userBean)
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
             })

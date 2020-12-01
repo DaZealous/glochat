@@ -36,10 +36,10 @@ public class MainFragment extends BaseFragment implements BottomNavigationView.O
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setOnNavigationItemReselectedListener(this);
         fragments.add(HomeFragment.newInstance());
-        fragments.add(CallFragment.newInstance());
         fragments.add(PhotoFragment.newInstance());
         fragments.add(ChatFragment.newInstance());
-        fragments.add(ProfileFragment.newInstance());
+        fragments.add(CallFragment.newInstance());
+      //  fragments.add(ProfileFragment.newInstance());
 
         loadFragment(fragments.get(0));
     }
@@ -52,11 +52,13 @@ public class MainFragment extends BaseFragment implements BottomNavigationView.O
     private boolean loadFragment(Fragment fragment) {
         //switching fragment
         if (fragment != null) {
-            getChildFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .commit();
-            return true;
+            if (!fragment.isAdded()) {
+                getChildFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+                return true;
+            }
         }
         return false;
     }
@@ -81,7 +83,7 @@ public class MainFragment extends BaseFragment implements BottomNavigationView.O
                 fragment = fragments.get(4);
                 break;
         }
-        return  loadFragment(fragment);
+        return loadFragment(fragment);
     }
 
     @Override

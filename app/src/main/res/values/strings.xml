@@ -81,4 +81,11 @@
     <string name="document">Document</string>
     <string name="phone_number">Phone Number</string>
     <string name="full_name">Full Name</string>
+    <string name="swipe_up">Swipe Up</string>
+    <string name="swipe_left_or_right_for_filters">Swipe left or right for filters</string>
+    <string name="be_the_first_to_comment">Be the first to comment:</string>
+    <string name="your_comment">your comment</string>
+    <string name="comments">comments :</string>
+    <string name="view_all">view all</string>
+    <string name="image_view">Image View</string>
 </resources>

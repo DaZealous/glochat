@@ -48,6 +48,7 @@ import com.google.firebase.storage.UploadTask
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.config.Configurations
 import com.jaiselrahman.filepicker.model.MediaFile
+import com.sinch.android.rtc.MissingPermissionException
 import de.hdodenhof.circleimageview.CircleImageView
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions
 import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText
@@ -56,7 +57,9 @@ import net.glochat.dev.adapter.ChatAdapter
 import net.glochat.dev.view.ChatsView
 import org.apache.commons.io.FileUtils
 import net.glochat.dev.R
+import net.glochat.dev.SinchService
 import net.glochat.dev.adapter.MyAdapter
+import net.glochat.dev.base.BaseActivity2
 import net.glochat.dev.models.ChatDao
 import net.glochat.dev.models.ContactModel
 import net.glochat.dev.utils.ChatDatabase
@@ -68,6 +71,7 @@ import java.io.File
 import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.jvm.Throws
 
 private lateinit var recyclerView: RecyclerView
 private lateinit var btnSend: ImageButton
@@ -82,6 +86,8 @@ private lateinit var btnDocumentPick: ImageButton
 private lateinit var btnContactPick: ImageButton
 private lateinit var popUpMenuBtn: ImageButton
 private lateinit var chooseEmoji: ImageButton
+private lateinit var btnVoiceCall: ImageButton
+private lateinit var btnVideoCall: ImageButton
 private lateinit var editText: EmojiconEditText
 private lateinit var adapter: ChatAdapter
 private lateinit var list: ArrayList<ChatDao>
@@ -133,7 +139,7 @@ private var isUserBlock: Boolean = false
 private val REQUEST_CODE = 24
 private lateinit var usernameLayout: LinearLayout
 
-class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, ChatsView {
+class ChatActivity : BaseActivity2(), SwipeRefreshLayout.OnRefreshListener, ChatsView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -174,32 +180,23 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
             //   textUserBlocked = findViewById(R.id.activity_chat_text_user_blocked)
             usernameLayout = findViewById(R.id.activity_chat_username_layout)
             parentLayout = findViewById(R.id.activity_chat_parent_layout)
+            btnVoiceCall = findViewById(R.id.activity_chat_menu_call)
+            btnVideoCall = findViewById(R.id.activity_chat_menu_video)
 
            emojiIcons = EmojIconActions(this, parentLayout, editText, chooseEmoji)
             emojiIcons.ShowEmojIcon()
             emojiIcons.setIconsIds(R.drawable.ic_baseline_keyboard_grey_24, R.drawable.ic_emoji_mood_grey_24)
 
-            /*chooseEmoji.setOnClickListener {
-                *//*val emojiPopup = EmojiPopup.Builder.fromRootView(parentLayout).build(editText)
-                if (emojiPopup.isShowing) {
-                    chooseEmoji.setImageResource(R.drawable.ic_emoji_mood_grey_24)
-                    emojiPopup.dismiss()
-                } else {
-                    chooseEmoji.setImageResource(R.drawable.ic_baseline_keyboard_grey_24)
-                    emojiPopup.toggle();
-                }*//*
-            }*/
-
             //Place a call
 
-            /* activity_chat_menu_call.setOnClickListener {
+             btnVoiceCall.setOnClickListener {
                  callButtonClicked()
              }
 
              //place video call
-             activity_chat_menu_video.setOnClickListener {
+             btnVideoCall.setOnClickListener {
                  callVideoButton()
-             }*/
+             }
 
             //rootFile = Environment.getExternalStorageDirectory()
 
@@ -211,6 +208,7 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
                     0, new ChatDatabase(this).findChatImage("1").length));*/
 
             // rootFile = Environment.getExternalStorageDirectory();
+
             rootFile =
                     Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
 
@@ -1528,4 +1526,53 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
                 BitmapFactory.decodeByteArray(ChatDatabase(this).findChatImage("1"), 0, ChatDatabase(this).findChatImage("1").size)
         )
     }
+
+    private fun callButtonClicked() {
+        val userName: String = otherUsername
+        if (userName.isEmpty()) {
+            Toast.makeText(this, "Please enter a user to call", Toast.LENGTH_LONG).show()
+            return
+        }
+        try {
+            val call =
+                    sinchServiceInterface.callUser(userName)
+            if (call == null) {
+                // Service failed for some reason, show a Toast and abort
+                Toast.makeText(
+                        this,
+                        "Service is not started. Try stopping the service and starting it again before "
+                                + "placing a call.",
+                        Toast.LENGTH_LONG
+                ).show()
+                return
+            }
+            val callId = call.callId
+            val callScreen = Intent(this, CallScreenActivity::class.java)
+            callScreen.putExtra(SinchService.CALL_ID, callId)
+            startActivity(callScreen)
+        } catch (e: MissingPermissionException) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(e.requiredPermission),
+                    0
+            )
+        }
+    }
+
+    private fun callVideoButton() {
+        val userName: String = otherUsername
+        if (userName.isEmpty()) {
+            Toast.makeText(this, "Please enter a user to call", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        val call =
+                sinchServiceInterface.callUserVideo(userName)
+        val callId = call.callId
+
+        val callScreen = Intent(this, VideoCallScreenActivity::class.java)
+        callScreen.putExtra(SinchService.CALL_ID, callId)
+        startActivity(callScreen)
+    }
+
 }

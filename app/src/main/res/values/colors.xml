@@ -10,6 +10,7 @@
 
     <color name="transparent">#00000000</color>
     <color name="color_FF0041">#ff2c54</color>
+    <color name="red">#B50224</color>
     <color name="color_bg_theme">#161924</color>
     <color name="color_tag">#9B9B9B</color>
 
@@ -20,5 +21,6 @@
 
     <color name="button_pressed_text_color">#bcbcbc</color>
     <color name="cyan">#36A4B8</color>
+    <color name="green">#4CAF50</color>
 
 </resources>

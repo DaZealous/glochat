@@ -22,7 +22,7 @@ public class ProfileFragment extends BaseFragment {
 
     @Override
     protected int setLayoutView() {
-        return R.layout.fragment_search;
+        return R.layout.fragment_profile;
     }
 
 
