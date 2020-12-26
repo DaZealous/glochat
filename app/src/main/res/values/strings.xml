@@ -88,4 +88,9 @@
     <string name="comments">comments :</string>
     <string name="view_all">view all</string>
     <string name="image_view">Image View</string>
+    <string name="select_images">Select Images</string>
+    <string name="post">Post</string>
+    <string name="picture_post">Picture Post</string>
+    <string name="caption_here">Caption here</string>
+    <string name="no_post_yet_you_can_make_your_first_by_clicking_the_button_below">No post yet, you can make your first post by clicking the button below</string>
 </resources>

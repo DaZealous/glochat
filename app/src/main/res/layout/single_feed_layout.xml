@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:textColor="@color/black"
-                android:textSize="17sp"
+                android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/single_feed_user_profile_pic"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -74,10 +74,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/single_feed_user_name_pic_layout" />
 
-        <ImageView
+        <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/single_feed_img_video_view"
             android:layout_width="match_parent"
-            android:layout_height="340dp"
+            android:layout_height="400dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
@@ -86,6 +86,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/single_feed_text_post_body" />
+
+        <com.codemybrainsout.onboarder.views.CircleIndicatorView
+            android:id="@+id/single_feed_circle_indicator_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/single_feed_img_video_view"
+            />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/single_feed_img_like_comment_btn_layout"
@@ -98,13 +108,13 @@
             app:layout_constraintBottom_toTopOf="@+id/single_feed_comments_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/single_feed_img_video_view">
+            app:layout_constraintTop_toBottomOf="@id/single_feed_circle_indicator_view">
 
             <TextView
                 android:id="@+id/single_feed_text_likes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/blue"
+                android:textColor="@color/black"
                 android:textSize="17sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -127,7 +137,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:textColor="@color/blue"
+                android:textColor="@color/black"
                 android:textSize="17sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/single_feed_img_btn_likes"
@@ -174,14 +184,14 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <TextView
-                android:visibility="visible"
                 android:id="@+id/single_feed_text_be_first_to_comment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:text="@string/be_the_first_to_comment"
                 android:textColor="@color/black"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:visibility="gone" />
 
             <View
                 android:layout_width="match_parent"
@@ -220,9 +230,9 @@
                         android:orientation="vertical">
 
                         <LinearLayout
-                            android:gravity="center_vertical"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
                             android:orientation="horizontal"
                             tools:ignore="UseCompoundDrawables">
 
@@ -235,11 +245,11 @@
                                 android:textSize="15sp" />
 
                             <ImageView
-                                android:layout_marginTop="1dp"
                                 android:id="@+id/single_feed_comment_section_img_is_verified"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
+                                android:layout_marginTop="1dp"
                                 android:contentDescription="@string/image_view"
                                 android:src="@drawable/ic_check_circle_green_24dp" />
                         </LinearLayout>

@@ -38,6 +38,7 @@ import net.glochat.dev.models.ChatDao
 import net.glochat.dev.view.ChatsView
 import java.io.ByteArrayOutputStream
 import java.io.File
+import kotlin.jvm.Throws
 
 class ChatAdapter(
         val context: Context,

@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,12 +24,12 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import net.glochat.dev.R;
-
 import net.glochat.dev.activity.FriendActivity;
 import net.glochat.dev.adapter.ChatHistoryAdapter;
+import net.glochat.dev.adapter.UsersStatusAdapter;
 import net.glochat.dev.base.BaseFragment;
 import net.glochat.dev.models.Conv;
-
+import net.glochat.dev.models.Users;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +43,8 @@ public class ChatFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
     @BindView(R.id.activity_chat_history_recycler_view)
     RecyclerView mConvList;
+    @BindView(R.id.activity_chat_history_recycler_view_status)
+    RecyclerView recyclerViewStatus;
     @BindView(R.id.fab)
     FloatingActionButton floatingActionButton;
     @BindView(R.id.activity_chat_history_swipe_refresh)
@@ -62,6 +63,8 @@ public class ChatFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
     private FirebaseUser firebaseUser;
 
+    private ArrayList<Users> usersList;
+    private UsersStatusAdapter usersStatusAdapter;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -109,6 +112,16 @@ public class ChatFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
         swipeRefreshLayout.setOnRefreshListener(this);
 
+        //recycler view for status
+        usersList = new ArrayList<>();
+        LinearLayoutManager linearLayoutManagerStatus = new LinearLayoutManager(getContext());
+        linearLayoutManagerStatus.setOrientation(LinearLayoutManager.HORIZONTAL);
+        recyclerViewStatus.setLayoutManager(linearLayoutManagerStatus);
+        recyclerViewStatus.setHasFixedSize(true);
+        usersStatusAdapter = new UsersStatusAdapter(requireContext(), usersList);
+        recyclerViewStatus.setAdapter(usersStatusAdapter);
+
+        fetchUserStatus();
         loadHistory();
 
         //ChatPageAdapter adapter = new ChatPageAdapter(getActivity(), DataCreate.datas);
@@ -185,6 +198,33 @@ public class ChatFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             }
         });
 
+    }
+
+    private void fetchUserStatus() {
+        usersList.clear();
+        ArrayList<Users> fUsers = new ArrayList<>();
+        FirebaseDatabase.getInstance().getReference().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.hasChildren()) {
+                    for (DataSnapshot snaps : snapshot.getChildren()) {
+                        Users user = snaps.getValue(Users.class);
+                        if (user != null) {
+                            if (!user.getUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                fUsers.add(user);
+                        }
+                    }
+                    usersList.add(snapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).getValue(Users.class));
+                    usersList.addAll(fUsers);
+                    usersStatusAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override

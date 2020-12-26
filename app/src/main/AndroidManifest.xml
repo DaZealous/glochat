@@ -14,6 +14,9 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera2.full" />
+
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -37,6 +40,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GloChat">
+        <activity android:name=".PostPicWithCap"></activity>
+        <activity android:name=".EditPicturePostActivity" />
         <activity android:name=".ChangeChatBack" />
         <activity android:name=".activity.FriendActivity" />
         <activity android:name=".activity.ShowImageActivity" />
@@ -52,7 +57,11 @@
         <activity android:name=".activity.CreateProfileActivity" />
         <activity android:name=".activity.AuthActivity" />
         <activity android:name=".activity.auth.ProfileInfo" />
-        <activity android:name=".activity.CameraActivity" />
+        <activity
+            android:name=".activity.CameraActivity"
+            android:configChanges="orientation"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait" />
         <activity android:name=".activity.ChatActivity" />
 
         <service android:name=".SinchService" />
@@ -110,18 +119,17 @@
         <activity
             android:name=".activity.PlayListActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".activity.CallVideoOrAudio"
             android:screenOrientation="portrait" />
 
-        <service android:name=".managers.FirebaseMessagingService"
+        <service
+            android:name=".managers.FirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <service android:name=".SinchService" />
 
         <provider
@@ -137,7 +145,6 @@
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-
         <activity
             android:name=".activity.CallScreenActivity"
             android:screenOrientation="portrait" />
@@ -151,7 +158,6 @@
             android:name=".activity.IncomingVideoCallScreenActivity"
             android:noHistory="true"
             android:screenOrientation="portrait" />
-
     </application>
 
 </manifest>
